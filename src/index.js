@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Stopwatch from './Stopwatch';
 import * as serviceWorker from './serviceWorker';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -10,6 +10,8 @@ import shadows from '@material-ui/core/styles/shadows';
 
 
 function Encuesta() {
+  
+  const [seconds, setSeconds] =React.useState(5)
   const [estado, setEstado] = React.useState(0)
   const [checked, setChecked] = React.useState({check:false, name:null});
   const [next, setNext] = React.useState(null)
@@ -17,9 +19,11 @@ function Encuesta() {
   const [pregunta, setPregunta] = React.useState({value:null,ind:-1,start:null})
   const [respuestas, setRespuestas] = React.useState({encuesta:null,nombre:'',value:[]})
   const handleChange = (event) => {
+    console.log('change checked')
     setChecked({check:event.target.checked, name:event.target.name});
   };
   const handleChangeNext = async () => {
+    
     console.log('Id pregunta: '+pregunta.ind)
     console.log('Numero preguntas: '+data.preguntas.length)
     console.log(checked)
@@ -31,24 +35,31 @@ function Encuesta() {
         tiempo: (new Date().getTime() - pregunta.start)/1000
       })
       setRespuestas({encuesta:respuestas.encuesta,nombre:respuestas.nombre,value:tempRespuestas})
+      
     }
     
     if (estado > 0 && checked.name !== null && pregunta.ind + 1 < data.preguntas.length){
+      
       setPregunta({value:data.preguntas[pregunta.ind+1],ind:pregunta.ind+1,start:new Date().getTime()})
       setChecked({check:false, name:null})
+      setSeconds(5)
       console.log('cambiar pregunta')
     }
     else if (pregunta.ind + 1 === data.preguntas.length) {
       setPregunta({value:{pregunta:'Has finalizado, ahora solo queda enviarlo '},
       ind:pregunta.ind+1,start:new Date().getTime()})
       
+      
     }
     else if (estado === 0){
       setPregunta({value:pregunta.value,ind:pregunta.ind,start:new Date().getTime()})
       setEstado(1)
     }
-    else {
+    else{
       try {
+        
+        if (estado != 2){
+        console.log('encuesta guardada')
         const post = await fetch("https://encuestapsicologia.herokuapp.com/save/send",{
         method: 'POST',
         headers: {
@@ -60,6 +71,7 @@ function Encuesta() {
       })
       setEstado(2)
       setPregunta({value:{pregunta:'Encuesta guardada'}})
+    }
       } catch (error) {
         
       }
@@ -74,6 +86,7 @@ function Encuesta() {
   }
 
   const handleChangeText = (event) => {
+    console.log('change text')
     setRespuestas({nombre:event.target.value,encuesta:respuestas.encuesta,value:[]})
   }
 
@@ -93,16 +106,46 @@ function Encuesta() {
   }
   
 }
+  
   React.useEffect(() => { 
     fetchData();
-    console.log(pregunta)
-  },[next]);
+    if (seconds == 0){
+      setChecked({check:false, name:'error'})
+    }
+    if (checked.name === 'error' && estado == 1){
+      
+      handleChangeNext()
+    }
+    if (estado == 1){
+      let interval = setInterval(() => {
+        setSeconds(seconds => seconds - 1);
+        
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+    
+    
+    
+  },[next,seconds]);
   return (
     <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', 
     height: '100vh',
     flexWrap:"wrap"}}>
       
       <Card className="container">
+        {estado == 1 && <CardContent>
+          <div className='container'>
+            <div className='row justify-content-center'>
+              <div className='col d-flex justify-content-center text-center'>
+              <p className='text-center border border-success w-25 rounded' 
+              >{seconds}</p>
+              </div>
+            
+            </div>
+          
+          </div>
+        
+        </CardContent>}
         
         <CardContent>
           {estado === 0 && 
@@ -117,7 +160,9 @@ function Encuesta() {
                      ,  justifyContent:'center'}}>
               <div>
                 <h1 className='my-2 text-center' style={{overflowWrap:'break-word'
-                     ,  justifyContent:'center'}}>
+                     ,  justifyContent:'center' , 
+                     fontSize:"4vw"
+                     }}>
                 
                   {estado > 0 && pregunta.value != null && pregunta.value.pregunta}
                 </h1>
@@ -132,7 +177,7 @@ function Encuesta() {
             pregunta.value.opciones.map((element,index) => {
               return(
               <div key={index} className='col text-center border border-primary rounded' 
-              style={{fontSize:'25px', margin:'9px',overflowWrap:'break-word'}}>
+              style={{fontSize:'3vw', margin:'9px',overflowWrap:'break-word'}}>
                 {element}
               </div>
               )
@@ -147,7 +192,7 @@ function Encuesta() {
           const color = check ? 'green':'blue'
           return(<div key={index} className="col text-center  w-100" style={{paddingTop:'9px'}}>
             <button type="button" className='btn btn-block'
-            style={{backgroundColor:color, fontSize:'25px',overflowWrap:'break-word'}}
+            style={{backgroundColor:color, fontSize:'2vw',overflowWrap:'break-word'}}
             name={element.respuesta}
             checked={check}
             onClick={handleChange}
@@ -165,7 +210,7 @@ function Encuesta() {
       <button type="button" className="btn btn-primary w-100" name='siguiente'
       disabled={estado == 2 || respuestas.nombre.slice().length == 0 || 
         (checked.name == null && estado == 1)}
-      style={{fontSize:'25px' }} 
+      style={{fontSize:'2.5vw' }} 
       onClick={handleChangeNext}
       >
         Siguiente
@@ -179,9 +224,11 @@ function Encuesta() {
   )  
 }
 ReactDOM.render(
+  
   <Encuesta/>,
   document.getElementById('root')
-);
+)
+
 
 
 
