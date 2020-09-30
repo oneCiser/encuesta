@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/encuesta/static/css/main.53630c35.chunk.css",
+    "main.js": "/encuesta/static/js/main.8dbae67c.chunk.js",
+    "main.js.map": "/encuesta/static/js/main.8dbae67c.chunk.js.map",
+    "runtime-main.js": "/encuesta/static/js/runtime-main.a41aeba5.js",
+    "runtime-main.js.map": "/encuesta/static/js/runtime-main.a41aeba5.js.map",
+    "static/js/2.59baa216.chunk.js": "/encuesta/static/js/2.59baa216.chunk.js",
+    "static/js/2.59baa216.chunk.js.map": "/encuesta/static/js/2.59baa216.chunk.js.map",
+    "index.html": "/encuesta/index.html",
+    "precache-manifest.e5d5f359301ca152dde358bd0297919b.js": "/encuesta/precache-manifest.e5d5f359301ca152dde358bd0297919b.js",
+    "service-worker.js": "/encuesta/service-worker.js",
+    "static/css/main.53630c35.chunk.css.map": "/encuesta/static/css/main.53630c35.chunk.css.map",
+    "static/js/2.59baa216.chunk.js.LICENSE.txt": "/encuesta/static/js/2.59baa216.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/encuesta/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a41aeba5.js",
+    "static/js/2.59baa216.chunk.js",
+    "static/css/main.53630c35.chunk.css",
+    "static/js/main.8dbae67c.chunk.js"
+  ]
+}
