@@ -109,8 +109,9 @@ function Encuesta() {
   
   React.useEffect(() => { 
     fetchData();
-    if (seconds == 0){
+    if (seconds <= 0){
       setChecked({check:false, name:'error'})
+      console.log(seconds)
     }
     if (checked.name === 'error' && estado == 1){
       
@@ -177,7 +178,7 @@ function Encuesta() {
             pregunta.value.opciones.map((element,index) => {
               return(
               <div key={index} className='col text-center border border-primary rounded' 
-              style={{fontSize:'3vw', margin:'9px',overflowWrap:'break-word'}}>
+              style={{fontSize:'4vw', margin:'9px',overflowWrap:'break-word'}}>
                 {element}
               </div>
               )
@@ -192,8 +193,9 @@ function Encuesta() {
           const color = check ? 'green':'blue'
           return(<div key={index} className="col text-center  w-100" style={{paddingTop:'9px'}}>
             <button type="button" className='btn btn-block'
-            style={{backgroundColor:color, fontSize:'2vw',overflowWrap:'break-word'}}
+            style={{backgroundColor:color, fontSize:'4vw',overflowWrap:'break-word'}}
             name={element.respuesta}
+            disabled={checked.name === 'error'}
             checked={check}
             onClick={handleChange}
             className="btn btn-primary btn-block" 
@@ -210,7 +212,7 @@ function Encuesta() {
       <button type="button" className="btn btn-primary w-100" name='siguiente'
       disabled={estado == 2 || respuestas.nombre.slice().length == 0 || 
         (checked.name == null && estado == 1)}
-      style={{fontSize:'2.5vw' }} 
+      style={{fontSize:'3.5vw' }} 
       onClick={handleChangeNext}
       >
         Siguiente
